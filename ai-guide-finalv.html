@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>It Runs. But Is It Right?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf7f2;
+    --text: #1a1a1a;
+    --accent: #e85d26;
+    --accent-light: #fff0e8;
+    --green: #2d8a4e;
+    --green-light: #e8f5ed;
+    --purple: #6c5ce7;
+    --purple-light: #f0eeff;
+    --red: #d63031;
+    --red-light: #ffeaea;
+    --yellow: #f9ca24;
+    --yellow-light: #fff9e0;
+    --gray: #6b7280;
+    --gray-light: #f3f4f6;
+    --border: #e5e1db;
+    --shadow: 0 2px 20px rgba(0,0,0,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 17px;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(232,93,38,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -10%;
+    left: -5%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(108,92,231,0.06) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .hero-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    line-height: 1.1;
+    font-weight: 400;
+    max-width: 800px;
+    margin-bottom: 1rem;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+    color: var(--gray);
+    max-width: 600px;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .hero-meta {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 0;
+  }
+
+  .hero-meta strong {
+    color: var(--text);
+  }
+
+  .hero-byline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    margin-top: 0.75rem;
+  }
+
+  /* ---- LAYOUT ---- */
+  .container {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  section {
+    padding: 4rem 0;
+  }
+
+  /* ---- TABLE OF CONTENTS ---- */
+  .toc {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin: 2rem 0 4rem;
+    box-shadow: var(--shadow);
+  }
+
+  .toc h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: baseline;
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed var(--border);
+    text-decoration: none;
+    color: var(--text);
+    transition: color 0.2s;
+  }
+
+  .toc-item:hover { color: var(--accent); }
+  .toc-item:last-child { border-bottom: none; }
+
+  .toc-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent);
+    width: 40px;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  .toc-title { font-weight: 600; }
+
+  .skip-note {
+    text-align: center;
+    padding: 1rem 2rem;
+    font-size: 0.88rem;
+    color: var(--gray);
+    font-style: italic;
+  }
+
+  .skip-note a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .skip-note a:hover { text-decoration: underline; }
+
+  /* ---- TYPOGRAPHY ---- */
+  h2.section-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+
+  h2.section-title em { color: var(--accent); font-style: italic; }
+
+  .section-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 2rem 0 0.8rem;
+  }
+
+  p {
+    margin-bottom: 1.2rem;
+  }
+
+  /* ---- CALLOUT BOXES ---- */
+  .callout {
+    border-radius: 12px;
+    padding: 1.5rem 1.8rem;
+    margin: 1.5rem 0;
+    border-left: 4px solid;
+  }
+
+  .callout-real-talk { background: var(--accent-light); border-color: var(--accent); }
+  .callout-failure { background: var(--red-light); border-color: var(--red); }
+  .callout-win { background: var(--green-light); border-color: var(--green); }
+  .callout-think { background: var(--purple-light); border-color: var(--purple); }
+  .callout-tip { background: var(--yellow-light); border-color: var(--yellow); }
+
+  .callout-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .callout-real-talk .callout-label { color: var(--accent); }
+  .callout-failure .callout-label { color: var(--red); }
+  .callout-win .callout-label { color: var(--green); }
+  .callout-think .callout-label { color: var(--purple); }
+  .callout-tip .callout-label { color: #b8860b; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* ---- CHECKLIST ---- */
+  .checklist {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 1.5rem 0;
+    box-shadow: var(--shadow);
+  }
+
+  .checklist h3 { margin-top: 0; font-size: 1.1rem; }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 0.5rem 0;
+    line-height: 1.5;
+  }
+
+  .check-box {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .check-box:hover { border-color: var(--accent); }
+
+  .check-box.checked {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .check-box.checked::after {
+    content: '✓';
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+
+  /* ---- DOC NUDGE (inside checklist) ---- */
+  .doc-nudge {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.8rem 0 0.1rem;
+    margin-top: 0.5rem;
+    border-top: 1px dashed var(--border);
+    font-size: 0.88rem;
+    color: var(--gray);
+    line-height: 1.55;
+  }
+
+  .doc-nudge-icon {
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ---- COMPARISON TABLE ---- */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  @media (max-width: 600px) { .compare { grid-template-columns: 1fr; } }
+
+  .compare-col { border-radius: 12px; padding: 1.5rem; }
+  .compare-bad { background: var(--red-light); border: 1px solid #f5c6c6; }
+  .compare-good { background: var(--green-light); border: 1px solid #b8dfc5; }
+
+  .compare-col h4 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.8rem;
+  }
+
+  .compare-bad h4 { color: var(--red); }
+  .compare-good h4 { color: var(--green); }
+
+  .compare-col p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin-bottom: 0;
+  }
+
+  /* ---- LEVEL MARKERS ---- */
+  .level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 1rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .level-1 { background: var(--green-light); color: var(--green); }
+  .level-2 { background: var(--yellow-light); color: #b8860b; }
+  .level-3 { background: var(--accent-light); color: var(--accent); }
+  .level-4 { background: var(--purple-light); color: var(--purple); }
+
+  /* ---- DOCUMENTATION TEMPLATE ---- */
+  .doc-template {
+    background: white;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 1.5rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+  }
+
+  .doc-template .field { margin-bottom: 1rem; }
+
+  .doc-template .field-label {
+    color: var(--accent);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .doc-template .field-value {
+    color: var(--gray);
+    font-style: italic;
+    padding-left: 1rem;
+    border-left: 2px solid var(--border);
+  }
+
+  /* ---- DIVIDER ---- */
+  .divider {
+    border: none;
+    height: 1px;
+    background: var(--border);
+    margin: 4rem 0;
+  }
+
+  /* ---- FOOTER ---- */
+  .footer {
+    text-align: center;
+    padding: 5rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+    background: var(--text);
+    color: #a8a29e;
+  }
+
+  .footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(ellipse 500px 300px at 30% 50%, rgba(232,93,38,0.08) 0%, transparent 100%),
+      radial-gradient(ellipse 400px 400px at 70% 50%, rgba(108,92,231,0.06) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .footer > * {
+    position: relative;
+  }
+
+  .footer-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.6rem;
+    color: #faf7f2;
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+  }
+
+  .footer-title em {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .footer-description {
+  color: #c4beb6; /* brighter warm gray */
+  font-size: 0.9rem;
+  max-width: 440px;
+  margin: 0 auto;
+  line-height: 1.6;
+  }
+
+  .footer-signoff {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.32rem; /* increased from 1.05rem */
+  font-style: normal;
+  color: #d6cfc6;
+  margin: 2rem 0 1.5rem;
+  opacity: 1;
+  line-height: 1.4;
+  }
+
+  .footer-author {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: #e7ded3; /* much brighter */
+    letter-spacing: 0.2px;
+    margin-bottom: 0.2rem;
+    line-height: 1.4;
+  }
+
+  .footer-author a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+
+  .footer-version {
+    font-size: 0.65rem;
+    color: #6b665f; /* intentionally subtle */
+    margin-top: 0;
+    line-height: 1.4;
+    letter-spacing: 0.2px;
+  }
+
+  .footer-divider {
+  width: 40px;
+  height: 1px;
+  background: rgba(168, 162, 158, 0.25);
+  margin: 0 auto 1.8rem;
+  }
+  
+  .footer-author a:hover {
+    opacity: 0.75;
+  }
+
+  /* ---- PROMPT EXAMPLE ---- */
+  .prompt-example {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+    box-shadow: var(--shadow);
+  }
+
+  .prompt-example-header {
+    background: var(--gray-light);
+    padding: 0.6rem 1.2rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+    color: var(--gray);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .prompt-example-body {
+    padding: 1.2rem 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .prompt-why {
+    margin-top: 0.9rem;
+    padding-top: 0.9rem;
+    border-top: 1px dashed var(--border);
+    font-size: 0.85rem;
+    color: var(--gray);
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  .prompt-why strong {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  /* ---- ANIMATIONS ---- */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero > * { animation: fadeUp 0.8s ease-out both; }
+  .hero > *:nth-child(2) { animation-delay: 0.1s; }
+  .hero > *:nth-child(3) { animation-delay: 0.2s; }
+  .hero > *:nth-child(4) { animation-delay: 0.3s; }
+  .hero > *:nth-child(5) { animation-delay: 0.4s; }
+
+  /* ---- NUMBER LIST ---- */
+  .numbered-point {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .point-number {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2rem;
+    color: var(--accent);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 30px;
+  }
+
+  .point-content { flex: 1; }
+  .point-content strong { display: block; margin-bottom: 0.3rem; }
+
+  /* ---- HIGHLIGHT ---- */
+  .hl {
+    background: linear-gradient(to top, rgba(232,93,38,0.15) 40%, transparent 40%);
+    padding: 0 2px;
+  }
+
+  .hl-green {
+    background: linear-gradient(to top, rgba(45,138,78,0.15) 40%, transparent 40%);
+    padding: 0 2px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero">
+  <span class="hero-label">A Practical Guide for Computational Researchers</span>
+  <h1>It Runs. But <em>Is It Right?</em></h1>
+  <p class="hero-subtitle">How to use AI coding assistants in scientific research without losing your rigor, your reproducibility, or your mind.</p>
+  <p class="hero-meta"><strong>By researchers, for researchers.</strong> With real stories from the trenches.</p>
+  <p class="hero-byline">By Harshitha Nandula</p>
+</header>
+
+<!-- ==================== INTRO ==================== -->
+<div class="container">
+
+  <section id="intro">
+    <span class="section-number">00 — THE PITCH</span>
+    <h2 class="section-title">Why this guide <em>exists</em></h2>
+
+    <p>Let's get something out of the way: <span class="hl">using AI doesn't make you a worse scientist.</span> If anything, using it properly can make you a <em>better</em> one. But that "properly" part? That's where things get interesting.</p>
+
+    <p>Right now, the landscape looks something like this: funding agencies have policies. Professional societies have guidance. Journals want disclosure statements. Your university probably has an "approved tools" list somewhere. But none of these tell you what to actually <em>do</em> when you're sitting at your laptop at 11 PM, the AI just rewrote half your script without asking, your ODE solver is throwing errors, and you're not entirely sure the compartmental model it gave you yesterday is using the equations you think it's using.</p>
+
+    <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.8rem 2rem; margin: 2rem 0; box-shadow: var(--shadow); text-align: center;">
+      <p style="font-family: 'Instrument Serif', serif; font-size: 1.5rem; color: var(--text); margin-bottom: 0.3rem; line-height: 1.3;">That's the gap this guide fills.</p>
+      <p style="font-size: 1.05rem; color: var(--gray); margin-bottom: 0;">Not policy. Not philosophy. <strong style="color: var(--accent);">Practice.</strong></p>
+    </div>
+
+    <p>Most researchers using AI for coding are figuring it out as they go — no training, no protocol, no shared playbook. People are either avoiding AI entirely ("too risky") or using it with zero guardrails ("it works, ship it"). Both approaches leave value and rigor on the table. This guide is for the middle path, where you use AI as a genuinely powerful tool with the same critical thinking, documentation, and justification you'd bring to any other part of your research. Because at the end of the day, the responsibility is on <em>you.</em> You're the scientist. The AI is the tool.</p>
+
+    <p>The examples here lean toward pharmacokinetic and toxicological modeling — that's the world I know. But if you're writing code that encodes scientific assumptions — differential equations, statistical models, simulations, anything where the math <em>means</em> something — this is for you.</p>
+  </section>
+
+  <!-- ==================== TABLE OF CONTENTS ==================== -->
+  <nav class="toc">
+    <h2>What's Inside</h2>
+    <a href="#level-1" class="toc-item">
+      <span class="toc-number">01</span>
+      <span class="toc-title">Does It Even Run? — Debugging AI code without losing your sanity</span>
+    </a>
+    <a href="#level-2" class="toc-item">
+      <span class="toc-number">02</span>
+      <span class="toc-title">It Runs, But Is It Right? — When the code works but the science doesn't</span>
+    </a>
+    <a href="#level-3" class="toc-item">
+      <span class="toc-number">03</span>
+      <span class="toc-title">Are You Even Asking the Right Question? — The hard part nobody warns you about</span>
+    </a>
+    <a href="#level-4" class="toc-item">
+      <span class="toc-number">04</span>
+      <span class="toc-title">Defending Your Work — Justifying AI-assisted decisions to the world</span>
+    </a>
+    <a href="#prompts" class="toc-item">
+      <span class="toc-number">05</span>
+      <span class="toc-title">The Prompt Engineering Cheat Sheet — How to talk to AI like you mean it</span>
+    </a>
+    <a href="#documentation" class="toc-item">
+      <span class="toc-number">06</span>
+      <span class="toc-title">The Documentation Protocol — What to record every time, no excuses</span>
+    </a>
+    <a href="#checklist-master" class="toc-item">
+      <span class="toc-number">07</span>
+      <span class="toc-title">The Master Checklist — Your pre-flight check for every AI session</span>
+    </a>
+    <p class="skip-note">Already comfortable with AI coding assistants? The deeper material starts in <a href="#level-3">Level 3</a>.</p>
+  </nav>
+
+
+  <!-- ==================== LEVEL 1 ==================== -->
+  <section id="level-1">
+    <span class="section-number">01</span>
+    <span class="level-badge level-1">🟢 Level 1</span>
+    <h2 class="section-title">Does it even <em>run?</em></h2>
+
+    <p>This is where everyone starts, and honestly? This is the easy part — even though it doesn't feel like it at the time.</p>
+
+    <p>You give the AI your inputs, your requirements, maybe some context about your model. It gives you a script. You run it. <strong>It errors out.</strong> Welcome to the club.</p>
+
+    <p>So you feed the error message back. The AI goes <em>"Oh! My apologies, I see the issue — I used the wrong variable name on line 47."</em> It gives you a new script. You run it. It errors out again. Different error this time. You feed <em>that</em> back. The AI is very sorry again. New script. New error. Repeat.</p>
+
+    <div class="callout callout-failure">
+      <span class="callout-label">Why This Happens</span>
+      <p>LLMs don't execute code. They predict what code <em>should look like</em> based on patterns. Studies consistently show majority failure rates on non-trivial coding benchmarks — we're not talking edge cases here. These aren't just typos — they're conceptual errors, wrong function signatures, misunderstood library APIs. The AI is confidently writing code it has never run.</p>
+    </div>
+
+    <h3>The Debug Loop Trap</h3>
+
+    <p>Here's the pattern that burns people: you go back and forth with the AI five, ten, fifteen times. Each "fix" introduces something new. By round eight, the script looks nothing like what you started with, and neither of you remembers what the original goal was. The AI has quietly restructured your entire approach, and you're too deep in the weeds to notice.</p>
+
+    <div class="callout callout-tip">
+      <span class="callout-label">What To Do Instead</span>
+      <p><strong>Set a three-strike rule for yourself.</strong> If the AI hasn't fixed the error in three attempts, stop. Read the error message yourself. Google it. Check the library documentation. Understand the issue <em>before</em> going back to the AI with a more specific question. "Fix this error" is a bad prompt. "This line throws a ValueError because the array dimensions are (3, 100) but the function expects (100, 3) — how should I reshape this for scipy.integrate.solve_ivp?" is a good one.</p>
+    </div>
+
+    <h3>The "Let Me Rewrite Everything" Problem</h3>
+
+    <p>This one is sneaky. You ask the AI to fix one function. It gives you back the entire script — rewritten. Maybe it "helpfully" reorganized your code. Maybe it switched from numpy arrays to pandas DataFrames. Maybe it changed your variable names to something "more descriptive." Now you have to diff the old and new versions line by line to figure out what actually changed vs. what it decided to "improve" without asking.</p>
+
+    <div class="compare">
+      <div class="compare-col compare-bad">
+        <h4>🚫 Vague Request</h4>
+        <p>"Hey, this script isn't working. Can you fix it?"</p>
+      </div>
+      <div class="compare-col compare-good">
+        <h4>✅ Specific Request</h4>
+        <p>"The function calculate_growth_rate on line 34 returns negative values when input > 500. Don't change anything else — just fix that function."</p>
+      </div>
+    </div>
+
+    <div class="checklist">
+      <h3>✅ Level 1 Checklist — Before You Run AI-Generated Code</h3>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Did you read the code before running it? (Not skimming. Actually reading.)</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Can you explain what each section does in plain English?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Did the AI change anything you didn't ask it to change?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Are the libraries/packages it's importing ones you actually want to use?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Do the variable names match what's in the rest of your project?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>If you're debugging: is this the same error or a new one it introduced?</span>
+      </div>
+      <div class="doc-nudge">
+        <span class="doc-nudge-icon">📝</span>
+        <span><strong>Document it:</strong> Log which scripts the AI generated vs. which you wrote yourself. Note the tool name and model version you used today.</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ==================== LEVEL 2 ==================== -->
+  <section id="level-2">
+    <span class="section-number">02</span>
+    <span class="level-badge level-2">🟡 Level 2</span>
+    <h2 class="section-title">It runs. But <em>is it right?</em></h2>
+
+    <p>Congratulations, your script runs without errors. No red text. No tracebacks. It even produces output that looks reasonable. Numbers come out. Plots get plotted. Everything seems fine.</p>
+
+    <p><strong>This is the most dangerous moment.</strong></p>
+
+    <p>Because "it runs" and "it's correct" are two very different things. And the gap between them is where scientific credibility goes to die.</p>
+
+    <div class="callout callout-failure">
+      <span class="callout-label">A Real Example</span>
+      <p>You're building a PBPK model. You tell the AI you need a two-compartment model with first-order absorption. The code runs. The concentration-time curve looks plausible. But when you actually look at the equations, the AI implemented a <em>different absorption model</em> than what you specified — maybe it used a transit compartment approach because it "seemed more appropriate." The output looks fine. The math is valid. <strong>But it's not what you asked for, and it's not what you'd defend in a paper.</strong></p>
+    </div>
+
+    <h3>The Silent Substitution</h3>
+
+    <p>LLMs don't tell you when they make a judgment call. They don't flag it. They don't say <em>"Hey, I chose approach B instead of approach A because..."</em> They just... do it. And if the output looks reasonable, you might never notice.</p>
+
+    <p>This is dangerous in any domain where there are multiple mathematically valid ways to implement something — which is basically all of computational science. A climate modeler might get a different radiation parameterization than they specified. A computational neuroscientist might find the AI swapped Hodgkin-Huxley dynamics for a simplified integrate-and-fire model. A bioinformatician might get a different sequence alignment algorithm than what their pipeline requires. <span class="hl">The choice between valid implementations carries different scientific assumptions, and the AI made that choice for you without saying so.</span></p>
+
+    <h3>How to Catch It</h3>
+
+    <div class="numbered-point">
+      <span class="point-number">1</span>
+      <div class="point-content">
+        <strong>Verify the math, not just the output.</strong>
+        Don't just check whether the numbers look right. Print out the actual equations the code is implementing. Compare them to what you intended. If you asked for dC/dt = -k·C, make sure it's not doing dC/dt = -k·C² because the AI decided second-order kinetics "fit better."
+      </div>
+    </div>
+
+    <div class="numbered-point">
+      <span class="point-number">2</span>
+      <div class="point-content">
+        <strong>Test with known solutions.</strong>
+        Before running your model with real parameters, run it with a case where you know the answer. Simple inputs. Analytical solutions. If your code can't reproduce something you can solve by hand, something is wrong.
+      </div>
+    </div>
+
+    <div class="numbered-point">
+      <span class="point-number">3</span>
+      <div class="point-content">
+        <strong>Ask the AI to explain its choices.</strong>
+        After it generates code, prompt it: <em>"Walk me through every equation in this model. What assumptions does each one encode? Are there alternative formulations you didn't use, and why?"</em> This forces the AI to surface decisions it made silently.
+      </div>
+    </div>
+
+    <div class="prompt-example">
+      <div class="prompt-example-header">Prompt That Catches Silent Substitutions</div>
+      <div class="prompt-example-body">
+        "Before I run this: list every mathematical equation in the script, the scientific assumption behind each one, and whether you chose it over an alternative formulation. If you made any choices I didn't explicitly ask for, flag them."
+        <div class="prompt-why">
+          <b>Why this works:</b> LLMs optimize for helpfulness by default — they'll "improve" your request without telling you. This prompt explicitly flips that: instead of rewarding initiative, it asks the AI to report on every autonomous decision it made. The AI can't hide a judgment call if you directly ask it to list them all.
+        </div>
+      </div>
+    </div>
+
+    <div class="checklist">
+      <h3>✅ Level 2 Checklist — After the Code Runs Successfully</h3>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Have you verified the equations match your intended mathematical formulation?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Have you tested with a known/analytical solution?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Did you ask the AI to explain every modeling choice it made?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Did you check units and dimensions throughout?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Does the output make physical/biological sense? (e.g., concentrations can't be negative)</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Have you compared the AI's implementation against a reference (textbook, published model, etc.)?</span>
+      </div>
+      <div class="doc-nudge">
+        <span class="doc-nudge-icon">📝</span>
+        <span><strong>Document it:</strong> Record which equations you verified and what reference you checked them against.</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ==================== LEVEL 3 ==================== -->
+  <section id="level-3">
+    <span class="section-number">03</span>
+    <span class="level-badge level-3">🟠 Level 3</span>
+    <h2 class="section-title">Are you even asking <em>the right question?</em></h2>
+
+    <p>This is the level most people never get to. And ironically, it's the level where AI becomes most valuable — <em>if</em> you know how to push it.</p>
+
+    <p>The code runs. It implements exactly what you asked for. The equations are correct. But here's the uncomfortable question: <strong>was what you asked for actually the best approach?</strong></p>
+
+    <div class="callout callout-real-talk">
+      <span class="callout-label">Story Time</span>
+      <p>True story from a project of mine: I needed to capture time-varying parameters — things that change over the course of a simulation rather than staying constant. The AI suggested a linear acceleration model. It worked. The code ran, the parameters varied with time, the output looked reasonable. I moved on.</p>
+      <p>Weeks later, while going back to clean up and document everything, I finally asked the question I should have asked from the start: <em>"Wait — what are the other ways to model time-varying dynamics?"</em> Turns out there were several. I built a comparison framework, plugged in each method, and evaluated them against each other. <strong>Double sigmoid performed better.</strong> Not by a huge margin, but it captured the dynamics more accurately.</p>
+      <p>The point isn't that linear acceleration was "wrong." The point is that I almost never questioned whether it was the <em>best</em> choice — because the AI suggested it first, and it worked. <span class="hl">Working and optimal are not the same thing.</span></p>
+    </div>
+
+    <h3>Why This Level Is Hard</h3>
+
+    <p>Because it requires you to question decisions that seem fine. It requires you to wonder about alternatives you might not know exist. It requires domain knowledge deep enough to ask <em>"what else could I be doing here?"</em> — and the intellectual honesty to actually follow through.</p>
+
+    <p>This isn't unique to any one field. A machine learning researcher might accept the first loss function the AI proposes without comparing alternatives. A climate modeler might not question the convection parameterization. A genomics researcher might use the default clustering algorithm because it was the AI's first suggestion and the results looked reasonable. <span class="hl">In every domain, the first thing that works tends to stick</span> — and that's exactly the habit this level asks you to break.</p>
+
+    <p>This is also where the AI starts to become an unreliable narrator. If you've been going back and forth with it for a while — dozens of messages, multiple decisions made — it starts developing its own internal "theory" about what you want. It will subtly steer suggestions toward what it <em>thinks</em> serves your goals, even if you haven't stated those goals explicitly. It's not malicious. It's pattern-matching. But the result is the same: <span class="hl">you lose objectivity without realizing it.</span></p>
+
+    <h3>How to Fight It</h3>
+
+    <div class="numbered-point">
+      <span class="point-number">1</span>
+      <div class="point-content">
+        <strong>Use fresh chats for major decisions.</strong>
+        When you're choosing between approaches, mathematical formulations, or model structures — start a new conversation. Don't let the AI's accumulated context bias its suggestions. A fresh chat gives you a fresh "opinion."
+      </div>
+    </div>
+
+    <div class="numbered-point">
+      <span class="point-number">2</span>
+      <div class="point-content">
+        <strong>Demand multiple options with tradeoffs.</strong>
+        Never accept the first suggestion. Always ask: <em>"What are 3–5 different approaches to this, with the pros and cons of each for my specific use case?"</em> Make it work to convince you.
+      </div>
+    </div>
+
+    <div class="numbered-point">
+      <span class="point-number">3</span>
+      <div class="point-content">
+        <strong>Validate against outside sources.</strong>
+        The AI gave you five methods. Cool. Now go check the literature. Are there methods it didn't mention? Are the pros and cons it listed actually accurate? Don't let the AI be your only source of truth.
+      </div>
+    </div>
+
+    <div class="numbered-point">
+      <span class="point-number">4</span>
+      <div class="point-content">
+        <strong>Build comparison frameworks.</strong>
+        When possible, don't just pick an approach — implement several and compare them empirically. Ask the AI to help you build the comparison scaffold. This is where AI is genuinely powerful: not in making decisions, but in helping you evaluate them.
+      </div>
+    </div>
+
+    <div class="callout callout-win">
+      <span class="callout-label">A Necessary Caveat</span>
+      <p>The goal here isn't to reject everything the AI suggests. Sometimes it genuinely proposes something better than what you had in mind. The skill is telling the difference between <em>"I evaluated this and it holds up"</em> and <em>"it was the first thing the AI said and it seemed fine."</em> One is a scientific decision. The other is a default you never questioned.</p>
+    </div>
+
+    <div class="prompt-example">
+      <div class="prompt-example-header">Prompt for Exploring Alternatives</div>
+      <div class="prompt-example-body">
+        "I'm currently using [method X] for [purpose]. I want to make sure this is the best approach. Give me all commonly used methods for this, including ones you haven't mentioned before. For each, explain: the mathematical basis, assumptions it makes, when it works well, when it breaks down, and how I could compare them empirically in my current framework."
+        <div class="prompt-why">
+          <b>Why this works:</b> "Including ones you haven't mentioned before" is the key clause. LLMs anchor to methods they've already suggested in a conversation — this phrase explicitly breaks that anchoring and requests a genuinely comprehensive list. "How I could compare them" shifts the AI from opinion-giver to analysis-enabler: you're not asking it to pick for you, you're asking it to help you evaluate.
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-think">
+      <span class="callout-label">The Meta-Lesson</span>
+      <p>This level is where "using AI makes you a better scientist" stops being a slogan and starts being real. Because this level <em>forces</em> you to justify every decision, challenge every default, and understand your work deeply enough to evaluate alternatives. You can't do Level 3 on autopilot.</p>
+      <p>And here's the thing: the work you produce when you engage at this level is often better than what you'd produce without AI at all — because most people don't systematically compare five different approaches before picking one. They don't have time. <span class="hl-green">The AI makes it possible. Your critical thinking makes it meaningful.</span></p>
+    </div>
+    <p style="color: var(--gray); font-size: 0.92rem; font-style: italic; margin-top: 1.5rem;"><span class="doc-nudge-icon">📝</span> For Level 3, documentation isn't a side task — it <em>is</em> the level. The record of which alternatives you compared, which you chose, and why is the most scientifically defensible artifact you'll produce. Keep a running log specifically for approach decisions throughout your project.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ==================== LEVEL 4 ==================== -->
+  <section id="level-4">
+    <span class="section-number">04</span>
+    <span class="level-badge level-4">🟣 Level 4</span>
+    <h2 class="section-title">Can you <em>defend</em> this?</h2>
+
+    <p>Everything before this was between you and your screen. This level is about other people.</p>
+
+    <div style="margin: 1.2rem 0 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+    <p style="margin: 0; padding-left: 1rem; border-left: 3px solid var(--border);"><strong style="color: #5a524a; font-size: 0.82rem; text-transform: uppercase; font-weight: 600; letter-spacing: 1px;">Your PI:</strong><em> “What assumptions are built into this model?”</em></p>
+    <p style="margin: 0; padding-left: 1rem; border-left: 3px solid var(--border);"><strong style="color: #5a524a; font-size: 0.82rem; text-transform: uppercase; font-weight: 600; letter-spacing: 1px;">A collaborator:</strong> <em>"What's this function doing on line 83?"</em></p>
+    <p style="margin: 0; padding-left: 1rem; border-left: 3px solid var(--border);"><strong style="color: #5a524a; font-size: 0.82rem; text-transform: uppercase; font-weight: 600; letter-spacing: 1px;">A reviewer:</strong> <em>"How was the computational analysis performed?"</em></p>
+   </div>
+
+    <p><strong>You need to have an answer. A real one.</strong></p>
+
+    <p>Not "the AI suggested it." Not a blank stare while you frantically try to remember what you were thinking three months ago. A clear, justified, <em>scientific</em> answer for every decision in your code.</p>
+
+    <div class="callout callout-real-talk">
+      <span class="callout-label">The Uncomfortable Truth</span>
+      <p>Here's something weird that happens when you use AI for research: the bar for justification goes <em>up</em>, not down. If you write code yourself, people generally trust it. They might ask about your approach, but there's a baseline assumption that you understood what you were doing.</p>
+      <p>The moment AI is involved — even if the work is actually <em>better</em> — suddenly everyone is suspicious. You need to take <strong>extra care</strong> to safeguard your ethics, credibility, and rigor. It's not fair, but it's reality. Plan for it.</p>
+    </div>
+
+    <h3>What "Defendable" Looks Like</h3>
+
+    <p>For every significant decision in your AI-assisted work, you should be able to answer three questions clearly and without hesitation:</p>
+
+    <div class="numbered-point">
+      <span class="point-number">1</span>
+      <div class="point-content">
+        <strong>"What did you do?"</strong>
+        The specific approach, equation, method, or implementation. In your own words, not the AI's.
+      </div>
+    </div>
+
+    <div class="numbered-point">
+      <span class="point-number">2</span>
+      <div class="point-content">
+        <strong>"Why did you do it that way?"</strong>
+        The scientific justification. What alternatives existed? Why was this one the best fit? What evidence supports the choice?
+      </div>
+    </div>
+
+    <div class="numbered-point">
+      <span class="point-number">3</span>
+      <div class="point-content">
+        <strong>"How do you know it's correct?"</strong>
+        The validation. What tests did you run? What edge cases did you check? How does the output compare to known results?
+      </div>
+    </div>
+
+    <h3>The Difference in Practice</h3>
+
+    <p>Let's make this concrete. Your PI asks in a lab meeting: <em>"Why did you use a double sigmoid for the time-varying parameters?"</em></p>
+
+    <div class="compare">
+      <div class="compare-col compare-bad">
+        <h4>🚫 Kills Your Credibility</h4>
+        <p>"The AI suggested it and it fit the data well."</p>
+      </div>
+      <div class="compare-col compare-good">
+        <h4>✅ Holds Up</h4>
+        <p>"I evaluated four approaches — linear acceleration, stepwise, single sigmoid, and double sigmoid. I implemented all four using the same parameter set and compared them against [reference]. Double sigmoid captured the transition dynamics most accurately, particularly during the [specific phase]. The comparison framework and results are in my documentation. I can walk you through the code."</p>
+      </div>
+    </div>
+
+    <p>The second answer isn't longer because it's padded. It's longer because it reflects actual work. Every claim in it maps to something you did in Levels 1–3: you compared alternatives (Level 3), you verified correctness (Level 2), you can explain the code (Level 1). <span class="hl">The defense writes itself when the process was real.</span></p>
+
+    <div class="callout callout-think">
+      <span class="callout-label">The Thing Nobody Says Out Loud</span>
+      <p>Here's the irony: if you've done this well, the fact that you used AI actually <em>strengthens</em> your position. Most people don't systematically compare four approaches before picking one. They don't build comparison frameworks. They don't document every decision point. They pick the first thing that seems reasonable and move on — whether they wrote the code themselves or not.</p>
+      <p>You used AI and you have receipts for every choice. That's not a liability. That's a higher standard of rigor than most manually-written code ever gets. The anxiety about disclosure — <em>"what if people think I didn't do the work?"</em> — flips completely once your documentation shows <span class="hl-green">you did <strong>more</strong> work, not less.</span></p>
+    </div>
+
+    <h3>Writing It Up</h3>
+
+    <p>At some point, this leaves the lab meeting and enters a manuscript. And right now, most researchers have no idea what AI disclosure actually looks like in a methods section. Here's a starting point:</p>
+
+    <div class="doc-template" style="font-size: 0.82rem; line-height: 1.7;">
+    <div class="field" style="margin-bottom: 0;">
+        <span class="field-value" style="border-left: none; padding-left: 0; font-style: normal; color: var(--text);">
+        Computational modeling was performed with assistance from <span style="color: var(--accent);">[tool name]</span> (<span style="color: var(--accent);">[model version]</span>, <span style="color: var(--accent);">[date range]</span>). The AI was used for <span style="color: var(--accent);">[specific tasks: e.g., initial code generation, debugging, exploring alternative model structures]</span>. Model structure was selected from <span style="color: var(--accent);">[N]</span> candidate approaches evaluated against <span style="color: var(--accent);">[criteria]</span>. All AI-generated code was manually reviewed, validated against <span style="color: var(--accent);">[analytical solutions / reference implementations / published results]</span>, and modified as described in <span style="color: var(--accent);">[supplementary section]</span>. The authors take full responsibility for the final implementation and all scientific decisions therein.
+        </span>
+    </div>
+    </div>
+
+    <p>Adapt it to your field's norms and your journal's requirements — these are evolving fast. But the bones are universal: name the tool, scope what it did, show how you validated it, and make clear that the scientific judgment was yours. Reviewers don't want to hear that you didn't use AI. They want to know that you used it responsibly.</p>
+
+    <div class="callout callout-win">
+      <span class="callout-label">The Silver Lining</span>
+      <p>If you've been doing Levels 1–3 properly, you already have all of this. You read the code (Level 1). You verified the math (Level 2). You compared alternatives (Level 3). <span class="hl-green">The documentation and justification is just writing down what you already did.</span> That's the whole trick: doing it right the first time means defending it is easy.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ==================== PROMPT ENGINEERING ==================== -->
+  <section id="prompts">
+    <span class="section-number">05</span>
+    <h2 class="section-title">The Prompt Engineering <em>Cheat Sheet</em></h2>
+
+    <p>Prompt engineering is a real skill. It's not magic and it's not hype — it's the difference between getting useful output and getting garbage you have to rewrite anyway. Here's the version that actually matters for scientific coding.</p>
+
+    <h3>The Core Principle</h3>
+
+    <p>LLMs optimize for helpfulness by default. That sounds great, but in practice it means they'll "improve" your request — adding features you didn't ask for, choosing approaches you didn't specify, restructuring code to be "better." <span class="hl">Your job is to constrain helpfulness into usefulness.</span> Specific inputs → specific outputs. Vague inputs → the AI's best guess, which is often wrong for your particular scientific context.</p>
+
+    <h3>Prompts for Common Modeling Tasks</h3>
+
+    <div class="prompt-example">
+      <div class="prompt-example-header">Starting a New Model</div>
+      <div class="prompt-example-body">
+        "I'm building a [type] model in [language] for [purpose]. The model has [N] compartments: [list them]. The governing equations are [list them or describe them]. Use [specific libraries]. Use the following parameter names and units: [list]. Do not add any additional compartments, equations, or assumptions beyond what I've specified. If anything is ambiguous, ask me before proceeding."
+        <div class="prompt-why">
+          <b>Why this works:</b> "Do not add any additional... beyond what I've specified" is the critical constraint — without it, the AI silently fills gaps with its own assumptions. "If anything is ambiguous, ask me before proceeding" flips its default mode from guessing-and-building to checking-and-confirming. You want it to pause at ambiguity, not plow through it.
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-example">
+      <div class="prompt-example-header">Debugging Without the Rewrite</div>
+      <div class="prompt-example-body">
+        "The function [name] on line [N] is producing [wrong behavior]. The expected behavior is [X]. Fix ONLY this function. Do not modify any other part of the code. Explain what was wrong and what you changed."
+        <div class="prompt-why">
+          <b>Why this works:</b> "Fix ONLY this function" paired with "Do not modify any other part of the code" directly prevents the full-script rewrite problem. "Explain what was wrong and what you changed" forces transparency — you know exactly what was touched and why, instead of having to diff two versions yourself.
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-example">
+      <div class="prompt-example-header">Evaluating Approaches</div>
+      <div class="prompt-example-body">
+        "I need to [accomplish X] in my [type] model. Give me at least 4 different mathematical approaches for this, each with: the equation(s), the assumptions it makes, when it works well, when it breaks down, and what kind of data/system it's best suited for. Then suggest how I could compare them within my existing framework."
+        <div class="prompt-why">
+          <b>Why this works:</b> "At least 4" prevents anchoring on the first suggestion. Requiring "when it breaks down" forces honest tradeoffs rather than a sales pitch for each option. Asking for a comparison scaffold at the end makes this immediately actionable — not just a list of options you still have to figure out how to evaluate.
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-example">
+      <div class="prompt-example-header">Validation Check</div>
+      <div class="prompt-example-body">
+        "Review the following code and tell me: (1) what equations it's actually implementing, (2) any scientific assumptions baked into the implementation, (3) any places where the code diverges from standard formulations, and (4) potential edge cases where it might fail."
+        <div class="prompt-why">
+          <b>Why this works:</b> "What equations it's <em>actually</em> implementing" (not "what it's supposed to implement") forces the AI to read the code as-written rather than as-intended. This is exactly how you catch silent substitutions — the AI will describe what's there, and if it doesn't match what you asked for, you've found the problem.
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-label">Pro Tip: Use AI to Write Your Prompts</span>
+      <p>This sounds recursive but it works. Open a <em>separate</em> AI chat (different tool or fresh session) and say: <em>"I need to ask an AI coding assistant to [your task]. Write me 3 detailed prompts I could use, each optimized for getting accurate, specific, well-documented output."</em> Take those prompts, tweak them for your specific context, and use them in your main session. You'll be surprised how much better the results are when the prompt itself is well-crafted.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ==================== DOCUMENTATION ==================== -->
+  <section id="documentation">
+    <span class="section-number">06</span>
+    <h2 class="section-title">The Documentation <em>Protocol</em></h2>
+
+    <p>You've seen the 📝 nudges at the end of every level. This is where it all comes together.</p>
+    <p>If you don't document your AI use, you're building on sand. Not because AI is bad, but because reproducibility requires it, journals are starting to require it, and future-you will thank present-you when someone asks how you got a specific result six months from now.</p>
+
+    <div class="callout callout-real-talk">
+      <span class="callout-label">Why It Matters</span>
+      <p>Same prompt + same model ≠ same output. LLMs have temperature (randomness). They get updated constantly. The same question asked tomorrow might get a different answer. If you can't reproduce your process, you can't reproduce your results. Major publishers are already requiring disclosure of AI tool name, version, and date in methodology sections. Funding agencies are tightening policies around AI in grant applications. This isn't going away — it's getting stricter.</p>
+    </div>
+
+    <h3>What to Record — Every Time</h3>
+
+    <div class="doc-template">
+      <div class="field">
+        <span class="field-label"># Session Info</span>
+        <span class="field-value">Date, AI tool name, model version, session/chat ID if available</span>
+      </div>
+      <div class="field">
+        <span class="field-label"># Purpose</span>
+        <span class="field-value">What were you trying to accomplish? (1-2 sentences)</span>
+      </div>
+      <div class="field">
+        <span class="field-label"># Key Prompts</span>
+        <span class="field-value">The main prompts you used (especially for decision-making or code generation)</span>
+      </div>
+      <div class="field">
+        <span class="field-label"># AI Output</span>
+        <span class="field-value">What did the AI produce? (save scripts, save key responses)</span>
+      </div>
+      <div class="field">
+        <span class="field-label"># Your Modifications</span>
+        <span class="field-value">What did you change from the AI's output? Why?</span>
+      </div>
+      <div class="field">
+        <span class="field-label"># Decisions Made</span>
+        <span class="field-value">Any modeling choices, equation selections, or approach decisions. What alternatives were considered?</span>
+      </div>
+      <div class="field">
+        <span class="field-label"># Validation</span>
+        <span class="field-value">How did you verify the output was correct?</span>
+      </div>
+      <div class="field">
+        <span class="field-label"># External Sources</span>
+        <span class="field-value">Papers, textbooks, or documentation you checked against</span>
+      </div>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-label">Keep It Realistic</span>
+      <p>You don't need to transcribe every message. Focus on <strong>decision points</strong>: moments where a choice was made about your model, your equations, your approach. Those are the things someone will ask about later. The rest is debugging noise — useful in the moment, irrelevant for documentation.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ==================== MASTER CHECKLIST ==================== -->
+  <section id="checklist-master">
+    <span class="section-number">07</span>
+    <h2 class="section-title">The Master <em>Checklist</em></h2>
+
+    <p>Print this out. Tape it to your monitor. Pull it up at the start of every AI session. It takes two minutes to go through and it will save you hours of backtracking.</p>
+
+    <div class="checklist">
+      <h3>🟢 Before You Start</h3>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Do I understand what I'm trying to accomplish well enough to explain it without AI?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Am I starting a fresh chat for a new topic/decision? (Avoid context contamination)</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Have I written a specific, structured prompt? (Not "help me with my model")</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Is my documentation log open and ready?</span>
+      </div>
+    </div>
+
+    <div class="checklist">
+      <h3>🟡 While You're Working</h3>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Am I reading the code before running it?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Did the AI change anything I didn't ask it to change?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Am I stuck in a debug loop? (Three strikes → step back and research independently)</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>When the AI suggested an approach, did I ask for alternatives?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Am I logging decisions and the reasoning behind them?</span>
+      </div>
+    </div>
+
+    <div class="checklist">
+      <h3>🟠 After the Session</h3>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Have I verified the equations/math, not just the output?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Have I tested with known solutions or edge cases?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Have I checked the AI's claims against at least one outside source?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Could I explain and justify every decision to my PI right now?</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+        <span>Is my documentation complete for this session?</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ==================== CLOSING ==================== -->
+  <section id="closing">
+    <span class="section-number">∞</span>
+    <h2 class="section-title">The actual <em>point</em></h2>
+
+    <p>Nobody has this fully figured out. Not me, not your PI, not the people writing institutional policies. The landscape is changing faster than any guide can keep up with. The model you're using today might be two generations old by the time someone else reads this.</p>
+
+    <p>What won't change is the underlying principle: if your name is on the research, you need to understand every line of code, justify every decision, and be able to defend every result — regardless of what tool helped you get there.</p>
+
+    <p>I've found that doing this well — the verification, the comparison of alternatives, the documentation — doesn't slow me down. It makes the work better. It's caught mistakes I wouldn't have caught otherwise. It's pushed me to explore options I wouldn't have considered. It's forced me to understand my own project at a depth I might have skipped. I think there's something genuinely valuable in a workflow that refuses to let you be lazy about your own understanding.</p>
+
+    <p>Your code. Your model. Your science. Your name on the paper. <span class="hl">Make sure you deserve the credit.</span></p>
+  </section>
+
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer">
+  <p class="footer-title">It Runs. But <em>Is It Right?</em></p>
+  <p class="footer-description">
+    A practical guide for computational researchers<br>using AI coding assistants.
+  </p>
+  <div class="footer-divider"></div>
+  <p class="footer-signoff">
+    Made with statistically significant emotional damage.
+  </p>
+  <p class="footer-author">
+    Harshitha Nandula ·
+    <a href="https://www.linkedin.com/in/harshitha-nandula-4a0243234/" target="_blank">LinkedIn</a>
+  </p>
+  <p class="footer-version">Living document · Feedback welcome</p>
+</footer>
+
+ 
+</body>
+</html>
+ 
